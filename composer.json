@@ -1,0 +1,18 @@
+{
+  "name": "powar/sms-gateway",
+  "description": "",
+  "keywords": ["sms", "gateway"],
+  "version": "0.0.1",
+  "authors": [{
+    "name": "Mikhail Kudryashov",
+    "email": "powar@saratov.ru"
+  }],
+  "require": {
+    "php":">=5.3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "SmsGateway\\": "src/"
+    }
+  }
+}
