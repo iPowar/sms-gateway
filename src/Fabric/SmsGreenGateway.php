@@ -3,23 +3,21 @@
 namespace SmsGateway\Fabric;
 
 use SmsGateway\Core\AbstractSmsGateway;
-use SmsGateway\Core\Response;
-use SmsGateway\Exception\SmsGatewayException;
 
 /**
  * @author Mikhail Kudryashov <kudryashov@fortfs.com>
  */
-class SmsAeroGateway extends AbstractSmsGateway
+class SmsGreenGateway extends AbstractSmsGateway
 {
     /**
-     * @var string
+     * @var int
      */
-    private $sender;
+    private $dlr;
 
     /**
      * @var string
      */
-    private $format;
+    private $sender;
 
     /**
      * @param array $config
@@ -29,7 +27,7 @@ class SmsAeroGateway extends AbstractSmsGateway
         parent::__construct($config);
 
         $this->sender = $config['sender'];
-        $this->format = $config['format'];
+        $this->dlr = $config['dlr'];
     }
 
     /**
@@ -38,7 +36,7 @@ class SmsAeroGateway extends AbstractSmsGateway
      */
     protected function hasError($response)
     {
-        if ($response->result != 'accepted') {
+        if ($response->error_code) {
             return true;
         }
 
@@ -50,7 +48,7 @@ class SmsAeroGateway extends AbstractSmsGateway
      */
     protected function getUrl()
     {
-        return 'https://' . $this->getHost() . '/send';
+        return 'https://' . $this->getHost() . '/mt.cgi';
     }
 
     /**
@@ -60,11 +58,11 @@ class SmsAeroGateway extends AbstractSmsGateway
     {
         return array(
             'user' => $this->getUser(),
-            'password' => md5($this->getPassword()),
+            'pass' => $this->getPassword(),
             'to' => $this->getMessage()->getPhoneNumber(),
-            'text' => $this->getMessage()->getContent(),
+            'txt' => $this->getMessage()->getContent(),
             'from' => $this->sender,
-            'answer' => $this->format,
+            'Dlr' => $this->dlr,
         );
     }
 }

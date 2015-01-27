@@ -3,6 +3,7 @@
 namespace SmsGateway\Core;
 
 use SmsGateway\Exception\SmsGatewayException;
+use SmsGateway\Message\Message;
 use SmsGateway\Validate\ConfigValidator;
 
 /**
@@ -31,10 +32,10 @@ abstract class AbstractSmsGateway
     private $message;
 
     /**
-     * @param mixed $response
-     * @return Response
+     * @param $response
+     * @return bool
      */
-    abstract protected function handleResponse($response);
+    abstract protected function hasError($response);
 
     /**
      * @return string
@@ -141,6 +142,27 @@ abstract class AbstractSmsGateway
         $request->createPostRequest($this->getUrl(), $this->getData());
 
         $response = $this->handleResponse($request->getResponse());
+
+        return $response;
+    }
+
+    /**
+     * @param string $curlResponse
+     * @return Response
+     * @throws SmsGatewayException
+     */
+    protected function handleResponse($curlResponse)
+    {
+        $response = new Response();
+        $curlResponse = json_decode($curlResponse);
+
+        if ($this->hasError($curlResponse)) {
+            throw SmsGatewayException::unAvailableGateway();
+        }
+
+        $response->setId($curlResponse->id);
+        $response->setPhone($this->getMessage()->getPhoneNumber());
+        $response->setStatus(Response::ACCEPTED);
 
         return $response;
     }

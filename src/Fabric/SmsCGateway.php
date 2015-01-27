@@ -28,8 +28,6 @@ class SmsCGateway extends AbstractSmsGateway
 
     /**
      * @param array $config
-     *
-     * @TODO refactoring set config
      */
     public function __construct(array $config)
     {
@@ -41,24 +39,16 @@ class SmsCGateway extends AbstractSmsGateway
     }
 
     /**
-     * @param string $curlResponse
-     * @return Response
-     * @throws SmsGatewayException
+     * @param $response
+     * @return bool
      */
-    protected function handleResponse($curlResponse)
+    protected function hasError($response)
     {
-        $response = new Response();
-        $curlResponse = json_decode($curlResponse);
-
-        if ($curlResponse->error_code) {
-            throw SmsGatewayException::unableToSend($curlResponse->error);
+        if ($response->error_code) {
+            return true;
         }
 
-        $response->setId($curlResponse->id);
-        $response->setPhone($this->getMessage()->getPhoneNumber());
-        $response->setStatus(Response::ACCEPTED);
-
-        return $response;
+        return false;
     }
 
     /**

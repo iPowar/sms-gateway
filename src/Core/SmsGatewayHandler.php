@@ -5,6 +5,8 @@ namespace SmsGateway\Core;
 use SmsGateway\Exception\SmsGatewayException;
 use SmsGateway\Fabric\SmsAeroGateway;
 use SmsGateway\Fabric\SmsCGateway;
+use SmsGateway\Fabric\SmsGreenGateway;
+use SmsGateway\Message\Message;
 use SmsGateway\Validate\PhoneNumberValidator;
 
 /**
@@ -51,6 +53,7 @@ class SmsGatewayHandler
             $gateway->setMessage($message);
 
             $gatewayResponse = $gateway->send();
+            $gatewayResponse->setGatewayId($gatewayName);
 
             if ($gatewayResponse->getStatus() === Response::ACCEPTED) {
                 return $gatewayResponse;
@@ -83,6 +86,9 @@ class SmsGatewayHandler
                 break;
             case 'sms_c':
                 $gateway = new SmsCGateway($gatewayConfig);
+                break;
+            case 'sms_green':
+                $gateway = new SmsGreenGateway($gatewayConfig);
                 break;
         }
 

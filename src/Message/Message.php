@@ -1,6 +1,6 @@
 <?php
 
-namespace SmsGateway\Core;
+namespace SmsGateway\Message;
 
 use DateTime;
 
@@ -9,6 +9,9 @@ use DateTime;
  */
 class Message
 {
+    const MESSAGE = 'Your authorization code: ';
+    const CODE_LENGTH = 5;
+
     /**
      * @var int
      */
@@ -25,10 +28,16 @@ class Message
     private $createdAt;
 
     /**
-     * @param int $phoneNumber
-     * @param string $content
+     * @var string
      */
-    public function __construct($phoneNumber, $content = null)
+    private $code;
+
+    /**
+     * @param $phoneNumber
+     * @param null $content
+     * @param bool $generateCode
+     */
+    public function __construct($phoneNumber, $content = null, $generateCode = false)
     {
         $this->phoneNumber = $phoneNumber;
         $this->content = $content;
@@ -65,5 +74,25 @@ class Message
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @return string
+     */
+    private function generateCode()
+    {
+        return substr(md5(time()), 0, self::CODE_LENGTH);
+    }
+
+    /**
+     * @return string
+     */
+    private function generateContent()
+    {
+        if ($message = $this->getContent()) {
+            return $message . $this->code;
+        }
+
+        return self::MESSAGE . $this->code;
     }
 }

@@ -31,6 +31,11 @@ class Response
     private $status;
 
     /**
+     * @var string
+     */
+    private $gatewayId;
+
+    /**
      * @return int
      */
     public function getId()
@@ -92,5 +97,21 @@ class Response
     public function setStatus($status)
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGatewayId()
+    {
+        return $this->gatewayId;
+    }
+
+    /**
+     * @param string $gatewayId
+     */
+    public function setGatewayId($gatewayId)
+    {
+        $this->gatewayId = $gatewayId;
     }
 }
