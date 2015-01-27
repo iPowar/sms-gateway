@@ -7,6 +7,7 @@ use SmsGateway\Fabric\SmsAeroGateway;
 use SmsGateway\Fabric\SmsCGateway;
 use SmsGateway\Fabric\SmsGlobalGateway;
 use SmsGateway\Fabric\SmsGreenGateway;
+use SmsGateway\Fabric\SmsPilotGateway;
 use SmsGateway\Message\Message;
 use SmsGateway\Validate\PhoneNumberValidator;
 
@@ -93,6 +94,9 @@ class SmsGatewayHandler
                 break;
             case 'sms_global':
                 $gateway = new SmsGlobalGateway($gatewayConfig);
+                break;
+            case 'sms_pilot':
+                $gateway = new SmsPilotGateway($gatewayConfig);
                 break;
         }
 
