@@ -5,6 +5,7 @@ namespace SmsGateway\Core;
 use SmsGateway\Exception\SmsGatewayException;
 use SmsGateway\Fabric\SmsAeroGateway;
 use SmsGateway\Fabric\SmsCGateway;
+use SmsGateway\Fabric\SmsGlobalGateway;
 use SmsGateway\Fabric\SmsGreenGateway;
 use SmsGateway\Message\Message;
 use SmsGateway\Validate\PhoneNumberValidator;
@@ -89,6 +90,9 @@ class SmsGatewayHandler
                 break;
             case 'sms_green':
                 $gateway = new SmsGreenGateway($gatewayConfig);
+                break;
+            case 'sms_global':
+                $gateway = new SmsGlobalGateway($gatewayConfig);
                 break;
         }
 

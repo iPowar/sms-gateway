@@ -42,6 +42,11 @@ class Message
         $this->phoneNumber = $phoneNumber;
         $this->content = $content;
         $this->createdAt = new DateTime();
+
+        if ($generateCode) {
+            $this->code = $this->generateCode();
+            $this->content = $this->generateContent();
+        }
     }
 
     /**
@@ -74,6 +79,14 @@ class Message
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->code;
     }
 
     /**
