@@ -7,9 +7,6 @@ namespace SmsGateway\Core;
  */
 class Response 
 {
-    const ACCEPTED = 'accepted';
-    const ERROR = 'error';
-
     /**
      * @var int
      */

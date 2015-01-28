@@ -48,7 +48,7 @@ class SmsAeroGateway extends AbstractSmsGateway
     /**
      * @return string
      */
-    protected function getUrl()
+    protected function getSendUrl()
     {
         return 'https://' . $this->getHost() . '/send';
     }
@@ -56,7 +56,7 @@ class SmsAeroGateway extends AbstractSmsGateway
     /**
      * @return array
      */
-    protected function getData()
+    protected function getSendData()
     {
         return array(
             'user' => $this->getUser(),
