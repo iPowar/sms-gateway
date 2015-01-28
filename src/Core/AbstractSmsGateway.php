@@ -48,6 +48,11 @@ abstract class AbstractSmsGateway
     abstract protected function getData();
 
     /**
+     * @return mixed
+     */
+    abstract protected function getSmsIdFromResponse($curlResponse);
+
+    /**
      * @param array $config
      * @throws SmsGatewayException
      *
@@ -160,7 +165,7 @@ abstract class AbstractSmsGateway
             throw SmsGatewayException::unAvailableGateway();
         }
 
-        $response->setId($curlResponse->id);
+        $response->setId($this->getSmsIdFromResponse($curlResponse));
         $response->setPhone($this->getMessage()->getPhoneNumber());
         $response->setStatus(Response::ACCEPTED);
 

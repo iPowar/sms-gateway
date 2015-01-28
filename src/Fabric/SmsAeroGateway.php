@@ -67,4 +67,13 @@ class SmsAeroGateway extends AbstractSmsGateway
             'answer' => $this->format,
         );
     }
+
+    /**
+     * @param $curlResponse
+     * @return mixed
+     */
+    protected function getSmsIdFromResponse($curlResponse)
+    {
+        return $curlResponse->id;
+    }
 }

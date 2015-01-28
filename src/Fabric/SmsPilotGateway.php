@@ -3,6 +3,8 @@
 namespace SmsGateway\Fabric;
 
 use SmsGateway\Core\AbstractSmsGateway;
+use SmsGateway\Core\Response;
+use SmsGateway\Exception\SmsGatewayException;
 
 /**
  * @author Mikhail Kudryashov <kudryashov@fortfs.com>
@@ -15,11 +17,6 @@ class SmsPilotGateway extends AbstractSmsGateway
     private  $sender;
 
     /**
-     * @var string
-     */
-    private $key;
-
-    /**
      * @param array $config
      */
     public function __construct(array $config)
@@ -27,7 +24,6 @@ class SmsPilotGateway extends AbstractSmsGateway
         parent::__construct($config);
 
         $this->sender = $config['sender'];
-        $this->key = $config['key'];
     }
 
     /**
@@ -36,7 +32,15 @@ class SmsPilotGateway extends AbstractSmsGateway
      */
     protected function hasError($response)
     {
-        // TODO: Implement hasError() method.
+        if (isset($response->error)) {
+            return true;
+        }
+
+        if ((int)$response->send[0]->status < 0) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -44,7 +48,7 @@ class SmsPilotGateway extends AbstractSmsGateway
      */
     protected function getUrl()
     {
-        return 'https://' . $this->getHost() . '/api.php';
+        return 'https://' . $this->getHost() . '/api2.php';
     }
 
     /**
@@ -52,11 +56,29 @@ class SmsPilotGateway extends AbstractSmsGateway
      */
     protected function getData()
     {
-        return array(
-            'key' => $this->key,
-            'to' => $this->getMessage()->getPhoneNumber(),
-            #'from' => $this->sender,
-            'send' => $this->getMessage()->getContent(),
+        $array = array(
+            'login' => $this->getUser(),
+            'password' => $this->getPassword(),
+            'send' => array(
+                array(
+                    'from' => $this->sender,
+                    'to' => $this->getMessage()->getPhoneNumber(),
+                    'text' => $this->getMessage()->getContent(),
+                    )
+            ),
         );
+
+        $json = json_encode($array);
+
+        return array('json' => $json);
+    }
+
+    /**
+     * @param $curlResponse
+     * @return mixed
+     */
+    protected function getSmsIdFromResponse($curlResponse)
+    {
+        return $curlResponse->send[0]->server_id;
     }
 }

@@ -74,4 +74,13 @@ class SmsCGateway extends AbstractSmsGateway
             'valid' => $this->valid,
         );
     }
+
+    /**
+     * @param $curlResponse
+     * @return mixed
+     */
+    protected function getSmsIdFromResponse($curlResponse)
+    {
+        return $curlResponse->id;
+    }
 }
