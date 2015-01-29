@@ -32,11 +32,6 @@ abstract class AbstractSmsGateway
     private $message;
 
     /**
-     * @var string
-     */
-    private $gatewaySmsId;
-
-    /**
      * @param $response
      * @return bool
      */
@@ -101,9 +96,9 @@ abstract class AbstractSmsGateway
 
             $response->setId($this->getSmsIdFromResponse($curlResponse));
             $response->setPhone($this->getMessage()->getPhoneNumber());
-            $response->setStatus(SmsStatus::ACCEPTED);
+            $response->setStatus(SmsStatus::ACCEPTED_CODE);
         } catch (SmsGatewayException $e) {
-            $response->setStatus(SmsStatus::ERROR);
+            $response->setStatus(SmsStatus::ERROR_CODE);
             $response->setError($e->getMessage());
         }
 
@@ -122,7 +117,7 @@ abstract class AbstractSmsGateway
 
             $response->setStatus($this->getSmStatusFromResponse($curlResponse));
         } catch (SmsGatewayException $e) {
-            $response->setStatus(SmsStatus::ERROR);
+            $response->setStatus(SmsStatus::ERROR_CODE);
             $response->setError($e->getMessage());
         }
 
@@ -178,25 +173,9 @@ abstract class AbstractSmsGateway
     }
 
     /**
+     * @param string $url
+     * @param string|array $data
      * @return string
-     */
-    public function getGatewaySmsId()
-    {
-        return $this->gatewaySmsId;
-    }
-
-    /**
-     * @param string $gatewaySmsId
-     */
-    public function setGatewaySmsId($gatewaySmsId)
-    {
-        $this->gatewaySmsId = $gatewaySmsId;
-    }
-
-    /**
-     * @param $url
-     * @param $data
-     * @return mixed
      * @throws SmsGatewayException
      */
     private function createRequest($url, $data)

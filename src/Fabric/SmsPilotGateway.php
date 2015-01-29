@@ -96,7 +96,7 @@ class SmsPilotGateway extends AbstractSmsGateway
                 'password' => $this->getPassword(),
                 'check' => array(
                     array(
-                        'server_id' => $this->getGatewaySmsId(),
+                        'server_id' => $this->getMessage()->getGatewaySmsId(),
                     )
                 )
             ))

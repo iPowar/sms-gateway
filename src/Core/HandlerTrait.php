@@ -3,10 +3,7 @@
 namespace SmsGateway\Core;
 
 use SmsGateway\Validate\PhoneNumberValidator;
-use SmsGateway\Fabric\SmsAeroGateway;
 use SmsGateway\Fabric\SmsCGateway;
-use SmsGateway\Fabric\SmsGreenGateway;
-use SmsGateway\Fabric\SmsGlobalGateway;
 use SmsGateway\Fabric\SmsPilotGateway;
 use SmsGateway\Exception\SmsGatewayException;
 
@@ -36,17 +33,8 @@ trait HandlerTrait
 
         switch ($gatewayName) {
             default:
-            case 'sms_aero':
-                $gateway = new SmsAeroGateway($gatewayConfig);
-                break;
             case 'sms_c':
                 $gateway = new SmsCGateway($gatewayConfig);
-                break;
-            case 'sms_green':
-                $gateway = new SmsGreenGateway($gatewayConfig);
-                break;
-            case 'sms_global':
-                $gateway = new SmsGlobalGateway($gatewayConfig);
                 break;
             case 'sms_pilot':
                 $gateway = new SmsPilotGateway($gatewayConfig);

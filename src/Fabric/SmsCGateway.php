@@ -3,9 +3,7 @@
 namespace SmsGateway\Fabric;
 
 use SmsGateway\Core\AbstractSmsGateway;
-use SmsGateway\Core\Response;
 use SmsGateway\Core\SmsStatus;
-use SmsGateway\Exception\SmsGatewayException;
 
 /**
  * @author Mikhail Kudryashov <kudryashov@fortfs.com>
@@ -51,7 +49,7 @@ class SmsCGateway extends AbstractSmsGateway
      */
     protected function hasError($response)
     {
-        if ($response->error_code) {
+        if (isset($response->error_code)) {
             return true;
         }
 
@@ -98,8 +96,8 @@ class SmsCGateway extends AbstractSmsGateway
         return array(
             'login' => $this->getUser(),
             'psw' => md5($this->getPassword()),
-            'phones' => $this->getMessage()->getPhoneNumber(),
-            'id' => $this->getGatewaySmsId(),
+            'phone' => $this->getMessage()->getPhoneNumber(),
+            'id' => $this->getMessage()->getGatewaySmsId(),
             'fmt' => $this->format,
         );
     }

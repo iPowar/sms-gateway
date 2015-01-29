@@ -33,6 +33,16 @@ class Message
     private $code;
 
     /**
+     * @var string
+     */
+    private $gatewaySmsId;
+
+    /**
+     * @var string
+     */
+    private $gatewayLabel;
+
+    /**
      * @param $phoneNumber
      * @param null $content
      * @param bool $generateCode
@@ -87,6 +97,46 @@ class Message
     public function getCode()
     {
         return $this->code;
+    }
+
+    /**
+     * @param string $code
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGatewaySmsId()
+    {
+        return $this->gatewaySmsId;
+    }
+
+    /**
+     * @param mixed $gatewaySmsId
+     */
+    public function setGatewaySmsId($gatewaySmsId)
+    {
+        $this->gatewaySmsId = $gatewaySmsId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGatewayLabel()
+    {
+        return $this->gatewayLabel;
+    }
+
+    /**
+     * @param string $gatewayLabel
+     */
+    public function setGatewayLabel($gatewayLabel)
+    {
+        $this->gatewayLabel = $gatewayLabel;
     }
 
     /**

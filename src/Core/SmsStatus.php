@@ -72,7 +72,7 @@ class SmsStatus
     public static function getCodeByStatus($status)
     {
         if (!$code = array_search($status, static::getSmsStatuses())) {
-            throw new Exception(sprintf('Type "%s" was not found in "%s" class.', $status, get_called_class()));
+            throw new Exception(sprintf('Status "%s" was not found in "%s" class.', $status, get_called_class()));
         }
 
         return $code;

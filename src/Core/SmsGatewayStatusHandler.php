@@ -3,6 +3,7 @@
 namespace SmsGateway\Core;
 
 use SmsGateway\Exception\SmsGatewayException;
+use SmsGateway\Message\Message;
 
 /**
  * @author Mikhail Kudryashov <kudryashov@fortfs.com>
@@ -25,16 +26,16 @@ class SmsGatewayStatusHandler
     }
 
     /**
-     * @param $gatewayMessageId
+     * @param Message $message
      * @return Response
      * @throws SmsGatewayException
      */
-    public function handle($gatewayMessageId, $gatewayName)
+    public function handle(Message $message)
     {
         $this->checkConfig();
 
-        $gateway = $this->createGatewayByGatewayName($gatewayName);
-        $gateway->setGatewaySmsId($gatewayMessageId);
+        $gateway = $this->createGatewayByGatewayName($message->getGatewayLabel());
+        $gateway->setMessage($message);
 
         return $gateway->getSmsStatus();
     }

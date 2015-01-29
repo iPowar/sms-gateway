@@ -2,7 +2,7 @@
   "name": "powar/sms-gateway",
   "description": "",
   "keywords": ["sms", "gateway"],
-  "version": "0.0.1",
+  "version": "0.0.7",
   "authors": [{
     "name": "Mikhail Kudryashov",
     "email": "powar@saratov.ru"

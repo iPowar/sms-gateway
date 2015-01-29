@@ -50,7 +50,7 @@ class SmsGatewaySendHandler
             $gatewayResponse = $gateway->send();
             $gatewayResponse->setGatewayId($gatewayName);
 
-            if ($gatewayResponse->getStatus() === Response::ACCEPTED) {
+            if ($gatewayResponse->getStatus() === SmsStatus::ACCEPTED_CODE) {
                 return $gatewayResponse;
             }
         }
