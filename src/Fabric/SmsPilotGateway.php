@@ -8,28 +8,19 @@ use SmsGateway\Core\SmsStatus;
 /**
  * @author Mikhail Kudryashov <kudryashov@fortfs.com>
  */
-class SmsCGateway extends AbstractSmsGateway
+class SmsPilotGateway extends AbstractSmsGateway
 {
-    const STATUS_NOT_FOUND = -3;
-    const STATUS_NOT_DELIVERED = 20;
+    const STATUS_NOT_FOUND = -2;
+    const STATUS_NOT_DELIVERED = -1;
     const STATUS_ACCEPTED = 0;
-    const STATUS_DELIVERED = 1;
-    const STATUS_SCHEDULED = -1;
+    const STATUS_SENT = 1;
+    const STATUS_DELIVERED = 2;
+    const STATUS_SCHEDULED = 3;
 
     /**
      * @var string
      */
-    private $sender;
-
-    /**
-     * @var int
-     */
-    private $format;
-
-    /**
-     * @var string
-     */
-    private $valid;
+    private  $sender;
 
     /**
      * @param array $config
@@ -39,8 +30,6 @@ class SmsCGateway extends AbstractSmsGateway
         parent::__construct($config);
 
         $this->sender = $config['sender'];
-        $this->format = $config['format'];
-        $this->valid = $config['valid'];
         $this->responseType = 'json';
     }
 
@@ -50,7 +39,11 @@ class SmsCGateway extends AbstractSmsGateway
      */
     protected function hasError($response)
     {
-        if (isset($response->error_code)) {
+        if (isset($response->error)) {
+            return true;
+        }
+
+        if (isset($response->send) && (int)$response->send[0]->status < 0) {
             return true;
         }
 
@@ -62,7 +55,15 @@ class SmsCGateway extends AbstractSmsGateway
      */
     protected function getSendUrl()
     {
-        return 'https://' . $this->getHost() . '/sys/send.php';
+        return 'https://' . $this->getHost() . '/api2.php';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getStatusUrl()
+    {
+        return $this->getSendUrl();
     }
 
     /**
@@ -71,22 +72,18 @@ class SmsCGateway extends AbstractSmsGateway
     protected function getSendData()
     {
         return array(
-            'login' => $this->getUser(),
-            'psw' => md5($this->getPassword()),
-            'phones' => $this->getMessage()->getPhoneNumber(),
-            'mes' => $this->getMessage()->getContent(),
-            'sender' => $this->sender,
-            'fmt' => $this->format,
-            'valid' => $this->valid,
+            'json' => json_encode(array(
+                'login' => $this->getUser(),
+                'password' => $this->getPassword(),
+                'send' => array(
+                    array(
+                        'from' => $this->sender,
+                        'to' => $this->getMessage()->getPhoneNumber(),
+                        'text' => $this->getMessage()->getContent(),
+                    )
+                )
+            ))
         );
-    }
-
-    /**
-     * @return string
-     */
-    protected function getStatusUrl()
-    {
-        return 'https://' . $this->getHost() . '/sys/status.php';
     }
 
     /**
@@ -95,11 +92,15 @@ class SmsCGateway extends AbstractSmsGateway
     protected function getStatusData()
     {
         return array(
-            'login' => $this->getUser(),
-            'psw' => md5($this->getPassword()),
-            'phone' => $this->getMessage()->getPhoneNumber(),
-            'id' => $this->getMessage()->getGatewaySmsId(),
-            'fmt' => $this->format,
+            'json' => json_encode(array(
+                'login' => $this->getUser(),
+                'password' => $this->getPassword(),
+                'check' => array(
+                    array(
+                        'server_id' => $this->getMessage()->getGatewaySmsId(),
+                    )
+                )
+            ))
         );
     }
 
@@ -109,7 +110,7 @@ class SmsCGateway extends AbstractSmsGateway
      */
     protected function getSmsIdFromResponse($curlResponse)
     {
-        return $curlResponse->id;
+        return $curlResponse->send[0]->server_id;
     }
 
     /**
@@ -118,11 +119,11 @@ class SmsCGateway extends AbstractSmsGateway
      */
     protected function getSmStatusFromResponse($curlResponse)
     {
-        $gatewayStatus = $curlResponse->status;
+        $gatewayStatus = $curlResponse->check[0]->status;
 
         switch ($gatewayStatus) {
             case self::STATUS_ACCEPTED:
-                $status = SmsStatus::SENT_CODE;
+                $status = SmsStatus::ACCEPTED_CODE;
                 break;
             case self::STATUS_DELIVERED:
                 $status = SmsStatus::DELIVERED_CODE;
@@ -132,6 +133,9 @@ class SmsCGateway extends AbstractSmsGateway
                 break;
             case self::STATUS_NOT_FOUND:
                 $status = SmsStatus::NOT_FOUND_CODE;
+                break;
+            case self::STATUS_SENT:
+                $status = SmsStatus::SENT_CODE;
                 break;
             case self::STATUS_SCHEDULED:
                 $status = SmsStatus::SCHEDULED_CODE;

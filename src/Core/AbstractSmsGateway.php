@@ -3,13 +3,20 @@
 namespace SmsGateway\Core;
 
 use SmsGateway\Exception\SmsGatewayException;
+use SmsGateway\Message\Message;
 use SmsGateway\Validate\ConfigValidator;
+use Curl\Request;
 
 /**
  * @author Mikhail Kudryashov <kudryashov@fortfs.com>
  */
 abstract class AbstractSmsGateway
 {
+    /**
+     * @var string
+     */
+    protected $responseType;
+
     /**
      * @var string
      */
@@ -31,26 +38,45 @@ abstract class AbstractSmsGateway
     private $message;
 
     /**
-     * @param mixed $response
-     * @return Response
+     * @param $response
+     * @return bool
      */
-    abstract protected function handleResponse($response);
+    abstract protected function hasError($response);
 
     /**
      * @return string
      */
-    abstract protected function getUrl();
+    abstract protected function getSendUrl();
 
     /**
      * @return array
      */
-    abstract protected function getData();
+    abstract protected function getSendData();
+
+    /**
+     * @return string
+     */
+    abstract protected function getStatusUrl();
+
+    /**
+     * @return array
+     */
+    abstract protected function getStatusData();
+
+    /**
+     * @return mixed
+     */
+    abstract protected function getSmsIdFromResponse($curlResponse);
+
+    /**
+     * @param $curlResponse
+     * @return mixed
+     */
+    abstract protected function getSmStatusFromResponse($curlResponse);
 
     /**
      * @param array $config
      * @throws SmsGatewayException
-     *
-     * @TODO refactoring set config
      */
     public function __construct(array $config)
     {
@@ -69,15 +95,47 @@ abstract class AbstractSmsGateway
      */
     public function send()
     {
+        $response = new Response();
+
         try {
-            $response = $this->sendRequest();
+            $curlResponse = $this->createRequest($this->getSendUrl(), $this->getSendData());
+
+            $response->setId($this->getSmsIdFromResponse($curlResponse));
+            $response->setPhone($this->getMessage()->getPhoneNumber());
+            $response->setStatus(SmsStatus::ACCEPTED_CODE);
         } catch (SmsGatewayException $e) {
-            $response = new Response();
-            $response->setStatus(Response::ERROR);
+            $response->setStatus(SmsStatus::ERROR_CODE);
             $response->setError($e->getMessage());
         }
 
-            return $response;
+        return $response;
+    }
+
+    /**
+     * @return Response
+     */
+    public function getSmsStatus()
+    {
+        $response = new Response();
+
+        try {
+            $curlResponse = $this->createRequest($this->getStatusUrl(), $this->getStatusData());
+
+            $response->setStatus($this->getSmStatusFromResponse($curlResponse));
+        } catch (SmsGatewayException $e) {
+            $response->setStatus(SmsStatus::ERROR_CODE);
+            $response->setError($e->getMessage());
+        }
+
+        return $response;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGatewayAvailable()
+    {
+        return true;
     }
 
     /**
@@ -121,28 +179,26 @@ abstract class AbstractSmsGateway
     }
 
     /**
-     * @return bool
-     */
-    public function isGatewayAvailable()
-    {
-        return true;
-    }
-
-    /**
+     * @param string $url
+     * @param string|array $data
+     * @return string
      * @throws SmsGatewayException
      */
-    protected function sendRequest()
+    private function createRequest($url, $data)
     {
         if (!$this->isGatewayAvailable()) {
             throw SmsGatewayException::unAvailableGateway();
         }
 
-        $request = new Request();
-        $request->createPostRequest($this->getUrl(), $this->getData());
+        $request = new Request($url, 'POST', $data);
+        $request->setResponseClass($this->responseType);
+        $curlResponse = $request->getResponse()->getContent();
 
-        $response = $this->handleResponse($request->getResponse());
+        if ($this->hasError($curlResponse)) {
+            throw SmsGatewayException::unAvailableGateway();
+        }
 
-        return $response;
+        return $curlResponse;
     }
 
     /**

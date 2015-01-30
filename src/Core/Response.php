@@ -7,9 +7,6 @@ namespace SmsGateway\Core;
  */
 class Response 
 {
-    const ACCEPTED = 'accepted';
-    const ERROR = 'error';
-
     /**
      * @var int
      */
@@ -29,6 +26,11 @@ class Response
      * @var string
      */
     private $status;
+
+    /**
+     * @var string
+     */
+    private $gatewayId;
 
     /**
      * @return int
@@ -92,5 +94,21 @@ class Response
     public function setStatus($status)
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGatewayId()
+    {
+        return $this->gatewayId;
+    }
+
+    /**
+     * @param string $gatewayId
+     */
+    public function setGatewayId($gatewayId)
+    {
+        $this->gatewayId = $gatewayId;
     }
 }

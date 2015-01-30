@@ -1,6 +1,6 @@
 <?php
 
-namespace SmsGateway\Core;
+namespace SmsGateway\Message;
 
 use DateTime;
 
@@ -10,7 +10,7 @@ use DateTime;
 class Message
 {
     /**
-     * @var int
+     * @var string
      */
     private $phoneNumber;
 
@@ -25,10 +25,20 @@ class Message
     private $createdAt;
 
     /**
-     * @param int $phoneNumber
+     * @var string
+     */
+    private $gatewaySmsId;
+
+    /**
+     * @var string
+     */
+    private $gatewayLabel;
+
+    /**
+     * @param string $phoneNumber
      * @param string $content
      */
-    public function __construct($phoneNumber, $content = null)
+    public function __construct($phoneNumber, $content)
     {
         $this->phoneNumber = $phoneNumber;
         $this->content = $content;
@@ -36,7 +46,7 @@ class Message
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getPhoneNumber()
     {
@@ -65,5 +75,37 @@ class Message
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGatewaySmsId()
+    {
+        return $this->gatewaySmsId;
+    }
+
+    /**
+     * @param mixed $gatewaySmsId
+     */
+    public function setGatewaySmsId($gatewaySmsId)
+    {
+        $this->gatewaySmsId = $gatewaySmsId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGatewayLabel()
+    {
+        return $this->gatewayLabel;
+    }
+
+    /**
+     * @param string $gatewayLabel
+     */
+    public function setGatewayLabel($gatewayLabel)
+    {
+        $this->gatewayLabel = $gatewayLabel;
     }
 }
