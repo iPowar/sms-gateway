@@ -135,7 +135,12 @@ abstract class AbstractSmsGateway
      */
     public function isGatewayAvailable()
     {
-        return true;
+        $request = new Request($this->getSendUrl());
+        if ((int)$request->send()->getInfo(true)->http_code == 200) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -184,14 +189,14 @@ abstract class AbstractSmsGateway
      * @return string
      * @throws SmsGatewayException
      */
-    private function createRequest($url, $data)
+    protected function createRequest($url, $data)
     {
         if (!$this->isGatewayAvailable()) {
             throw SmsGatewayException::unAvailableGateway();
         }
 
         $request = new Request($url, 'POST', $data);
-        $request->setResponseClass($this->responseType);
+        $request->setResponseType($this->responseType);
         $curlResponse = $request->getResponse()->getContent();
 
         if ($this->hasError($curlResponse)) {
