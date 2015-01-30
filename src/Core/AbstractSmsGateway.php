@@ -5,12 +5,18 @@ namespace SmsGateway\Core;
 use SmsGateway\Exception\SmsGatewayException;
 use SmsGateway\Message\Message;
 use SmsGateway\Validate\ConfigValidator;
+use Curl\Request;
 
 /**
  * @author Mikhail Kudryashov <kudryashov@fortfs.com>
  */
 abstract class AbstractSmsGateway
 {
+    /**
+     * @var string
+     */
+    protected $responseType;
+
     /**
      * @var string
      */
@@ -184,10 +190,9 @@ abstract class AbstractSmsGateway
             throw SmsGatewayException::unAvailableGateway();
         }
 
-        $request = new Request();
-        $request->createPostRequest($url, $data);
-
-        $curlResponse = json_decode($request->getResponse());
+        $request = new Request($url, 'POST', $data);
+        $request->setResponseClass($this->responseType);
+        $curlResponse = $request->getResponse()->getContent();
 
         if ($this->hasError($curlResponse)) {
             throw SmsGatewayException::unAvailableGateway();

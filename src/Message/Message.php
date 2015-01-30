@@ -9,11 +9,8 @@ use DateTime;
  */
 class Message
 {
-    const MESSAGE = 'Your authorization code: ';
-    const CODE_LENGTH = 5;
-
     /**
-     * @var int
+     * @var string
      */
     private $phoneNumber;
 
@@ -30,11 +27,6 @@ class Message
     /**
      * @var string
      */
-    private $code;
-
-    /**
-     * @var string
-     */
     private $gatewaySmsId;
 
     /**
@@ -43,24 +35,18 @@ class Message
     private $gatewayLabel;
 
     /**
-     * @param $phoneNumber
-     * @param null $content
-     * @param bool $generateCode
+     * @param string $phoneNumber
+     * @param string $content
      */
-    public function __construct($phoneNumber, $content = null, $generateCode = false)
+    public function __construct($phoneNumber, $content)
     {
         $this->phoneNumber = $phoneNumber;
         $this->content = $content;
         $this->createdAt = new DateTime();
-
-        if ($generateCode) {
-            $this->code = $this->generateCode();
-            $this->content = $this->generateContent();
-        }
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getPhoneNumber()
     {
@@ -89,22 +75,6 @@ class Message
     public function getCreatedAt()
     {
         return $this->createdAt;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCode()
-    {
-        return $this->code;
-    }
-
-    /**
-     * @param string $code
-     */
-    public function setCode($code)
-    {
-        $this->code = $code;
     }
 
     /**
@@ -137,25 +107,5 @@ class Message
     public function setGatewayLabel($gatewayLabel)
     {
         $this->gatewayLabel = $gatewayLabel;
-    }
-
-    /**
-     * @return string
-     */
-    private function generateCode()
-    {
-        return substr(md5(time()), 0, self::CODE_LENGTH);
-    }
-
-    /**
-     * @return string
-     */
-    private function generateContent()
-    {
-        if ($message = $this->getContent()) {
-            return $message . $this->code;
-        }
-
-        return self::MESSAGE . $this->code;
     }
 }
