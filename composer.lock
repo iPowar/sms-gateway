@@ -1,0 +1,62 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "1ea1a6e008b034163afaeee4ed4b9319",
+    "packages": [
+        {
+            "name": "lexeo/curl",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lexeo/curl.git",
+                "reference": "0c2f114bd0362dc1278201d7689a34d1a608021d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lexeo/curl/zipball/0c2f114bd0362dc1278201d7689a34d1a608021d",
+                "reference": "0c2f114bd0362dc1278201d7689a34d1a608021d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Curl\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Alexey Grishatkin",
+                    "email": "lexeodev@gmail.com"
+                }
+            ],
+            "description": "Simple PHP5.3 cURL wrapper",
+            "keywords": [
+                "curl",
+                "http",
+                "php-curl",
+                "request"
+            ],
+            "time": "2014-11-12 00:08:18"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "lexeo/curl": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=5.4.0"
+    },
+    "platform-dev": []
+}
