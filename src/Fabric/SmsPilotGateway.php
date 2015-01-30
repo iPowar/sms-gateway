@@ -10,12 +10,12 @@ use SmsGateway\Core\SmsStatus;
  */
 class SmsPilotGateway extends AbstractSmsGateway
 {
-    const NOT_FOUND_STATUS_CODE = -2;
-    const NOT_DELIVERED_STATUS_CODE = -1;
-    const ACCEPTED_STATUS_CODE = 0;
-    const SENT_STATUS_CODE = 1;
-    const DELIVERED_STATUS_CODE = 2;
-    const SCHEDULED_STATUS_CODE = 3;
+    const STATUS_NOT_FOUND = -2;
+    const STATUS_NOT_DELIVERED = -1;
+    const STATUS_ACCEPTED = 0;
+    const STATUS_SENT = 1;
+    const STATUS_DELIVERED = 2;
+    const STATUS_SCHEDULED = 3;
 
     /**
      * @var string
@@ -30,6 +30,7 @@ class SmsPilotGateway extends AbstractSmsGateway
         parent::__construct($config);
 
         $this->sender = $config['sender'];
+        $this->responseType = 'json';
     }
 
     /**
@@ -121,22 +122,22 @@ class SmsPilotGateway extends AbstractSmsGateway
         $gatewayStatus = $curlResponse->check[0]->status;
 
         switch ($gatewayStatus) {
-            case self::ACCEPTED_STATUS_CODE:
+            case self::STATUS_ACCEPTED:
                 $status = SmsStatus::ACCEPTED_CODE;
                 break;
-            case self::DELIVERED_STATUS_CODE:
+            case self::STATUS_DELIVERED:
                 $status = SmsStatus::DELIVERED_CODE;
                 break;
-            case self::NOT_DELIVERED_STATUS_CODE:
+            case self::STATUS_NOT_DELIVERED:
                 $status = SmsStatus::NOT_DELIVERED_CODE;
                 break;
-            case self::NOT_FOUND_STATUS_CODE:
+            case self::STATUS_NOT_FOUND:
                 $status = SmsStatus::NOT_FOUND_CODE;
                 break;
-            case self::SENT_STATUS_CODE:
+            case self::STATUS_SENT:
                 $status = SmsStatus::SENT_CODE;
                 break;
-            case self::SCHEDULED_STATUS_CODE:
+            case self::STATUS_SCHEDULED:
                 $status = SmsStatus::SCHEDULED_CODE;
                 break;
             default:

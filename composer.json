@@ -2,13 +2,14 @@
   "name": "powar/sms-gateway",
   "description": "",
   "keywords": ["sms", "gateway"],
-  "version": "0.0.7",
+  "version": "0.0.8",
   "authors": [{
     "name": "Mikhail Kudryashov",
     "email": "powar@saratov.ru"
   }],
   "require": {
-    "php":">=5.3.0"
+    "php":">=5.4.0",
+    "lexeo/curl": "dev-master"
   },
   "autoload": {
     "psr-4": {
